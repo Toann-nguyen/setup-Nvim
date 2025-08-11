@@ -2,16 +2,23 @@
 
 " Disable compatibility with vi
 set nocompatible
+set clipboard=unnamedplus
+set cursorline
+set termguicolors   
+" Disable compatibility with vi
+set nocompatible
 
 " Enhanced Clipboard Configuration
 set clipboard=unnamedplus
+
 " Alternative clipboard settings for better compatibility
 if has('unnamedplus')
   set clipboard=unnamed,unnamedplus
 else
   set clipboard=unnamed
 endif
-
+" Plugins (using vim-plug)
+call plug#begin('~/.config/nvim/plugged')
 " Ensure proper clipboard functionality
 if has('nvim')
   let g:clipboard = {
@@ -27,7 +34,6 @@ if has('nvim')
     \   'cache_enabled': 1,
     \ }
 endif
-
 " Plugins (using vim-plug)
 call plug#begin('~/.config/nvim/plugged')
 
@@ -93,7 +99,6 @@ try
 catch
   colorscheme default
 endtry
-
 " Competitive Programming Template Command
 command! CPTemplate call SetCPTemplate()
 
@@ -130,10 +135,8 @@ function! SetCPTemplate()
   " Insert the template at the beginning of the file (line 0)
   call append(0, template)
 endfunction
-
 " Keymap to trigger the template insertion
-nmap <leader>cc :call SetCPTemplate()<CR>
-
+nmap <leader>cc :call InsertCppTemplate()<CR>
 " Set C++ file type
 autocmd BufNewFile,BufRead *.cpp set filetype=cpp
  
