@@ -2,7 +2,32 @@
 
 " Disable compatibility with vi
 set nocompatible
+
+" Enhanced Clipboard Configuration
 set clipboard=unnamedplus
+" Alternative clipboard settings for better compatibility
+if has('unnamedplus')
+  set clipboard=unnamed,unnamedplus
+else
+  set clipboard=unnamed
+endif
+
+" Ensure proper clipboard functionality
+if has('nvim')
+  let g:clipboard = {
+    \   'name': 'system',
+    \   'copy': {
+    \      '+': 'xclip -selection clipboard',
+    \      '*': 'xclip -selection primary',
+    \    },
+    \   'paste': {
+    \      '+': 'xclip -selection clipboard -o',
+    \      '*': 'xclip -selection primary -o',
+    \   },
+    \   'cache_enabled': 1,
+    \ }
+endif
+
 " Plugins (using vim-plug)
 call plug#begin('~/.config/nvim/plugged')
 
@@ -45,6 +70,18 @@ set smartindent
 " Leader Key
 let mapleader = " "
 
+" Enhanced Clipboard Keymaps
+" Copy to system clipboard
+vnoremap <C-c> "+y
+nnoremap <C-c> "+yy
+" Paste from system clipboard
+nnoremap <C-v> "+p
+vnoremap <C-v> "+p
+inoremap <C-v> <C-r>+
+
+" Copy entire buffer to clipboard
+nnoremap <leader>ca ggVG"+y
+
 " Competitive Programming Keymaps
 nnoremap <leader>rr :w<CR>:CompetitestRunNormal<CR>
 nnoremap <leader>rt :CompetitestRunTest<CR>
@@ -56,6 +93,7 @@ try
 catch
   colorscheme default
 endtry
+
 " Competitive Programming Template Command
 command! CPTemplate call SetCPTemplate()
 
@@ -92,8 +130,10 @@ function! SetCPTemplate()
   " Insert the template at the beginning of the file (line 0)
   call append(0, template)
 endfunction
+
 " Keymap to trigger the template insertion
-nmap <leader>cc :call InsertCppTemplate()<CR>
+nmap <leader>cc :call SetCPTemplate()<CR>
+
 " Set C++ file type
 autocmd BufNewFile,BufRead *.cpp set filetype=cpp
  
@@ -185,4 +225,3 @@ pcall(function()
   })
 end)
 EOF
-
